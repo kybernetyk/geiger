@@ -1,0 +1,20 @@
+# Works on ubuntu 12.04, 14.04, 16.04
+# If modified do "sudo udevadm control --reload-rules"
+# Then unplug and replug GQ GMC-300
+#
+# Newer models of the GQ GMC geiger counters may use a USB chip different
+# from the GMC-300. You can identify your model's vendor id and product id
+# by the following methodology:
+#
+# 1. At the command line type "lsusb".  You will get a printout of all
+#    USB devices plugged into your computer, for example,
+#
+# Bus 003 Device 006: ID 1a86:7523 QinHeng Electronics HL-340 USB-Serial adapter
+#
+#    Your vendor id is 1a86 and your product id is 7523. Change the values of
+#    ATTR{idVendor} and ATTRS{idProduct} in the lines below to your model's.
+#
+#
+SUBSYSTEM=="usb", ATTR{idVendor}=="067b", ATTRS{idProduct}=="2303", MODE:="666", GROUP="plugdev"
+
+SUBSYSTEM=="tty", KERNEL=="ttyUSB*", ATTRS{idVendor}=="067b", MODE:="666", SYMLINK+="gqgmc"

@@ -129,13 +129,10 @@ float get_batt_voltage(int fd) {
 
 
 int main(int argc, char *argv[]) {
-	char *devname = "/dev/gqmc";
+	char *devname = "/dev/gqgmc";
 	if (argc > 1) {
 		devname = strdup(argv[1]);
 	}
-
-	
-	//fprintf(stderr, "s %s /dev/cu...\n", argv[0]);
 
 	//O_NONBLOCK is needed on OS X if the user tries to open /dev/tty.USB... instead of /dev/cu.USB...
 	//otherwise open() will hang forever

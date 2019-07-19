@@ -9,13 +9,10 @@
 #include <errno.h>
 #include <string.h>
 
-int
-set_interface_attribs (int fd, int speed, int parity)
-{
+int set_interface_attribs (int fd, int speed, int parity) {
         struct termios tty;
         memset (&tty, 0, sizeof tty);
-        if (tcgetattr (fd, &tty) != 0)
-        {
+        if (tcgetattr (fd, &tty) != 0) {
                 fprintf(stderr, "error %d from tcgetattr", errno);
                 return -1;
         }
@@ -42,8 +39,7 @@ set_interface_attribs (int fd, int speed, int parity)
         tty.c_cflag &= ~CSTOPB;
         tty.c_cflag &= ~CRTSCTS;
 
-        if (tcsetattr (fd, TCSANOW, &tty) != 0)
-        {
+        if (tcsetattr (fd, TCSANOW, &tty) != 0) {
                 fprintf(stderr, "error %d from tcsetattr", errno);
                 return -1;
         }
@@ -133,18 +129,22 @@ float get_batt_voltage(int fd) {
 
 
 int main(int argc, char *argv[]) {
-	if (argc != 2) {
-		fprintf(stderr, "Not enough arguments. syntax is %s /dev/cu...\n", argv[0]);
-		return 1;
+	char *devname = "/dev/gqmc";
+	if (argc > 1) {
+		devname = strdup(argv[1]);
 	}
+
+	
+	//fprintf(stderr, "s %s /dev/cu...\n", argv[0]);
 
 	//O_NONBLOCK is needed on OS X if the user tries to open /dev/tty.USB... instead of /dev/cu.USB...
 	//otherwise open() will hang forever
-	int fd = open(argv[1], O_RDWR | O_NOCTTY | O_SYNC);
+	int fd = open(devname, O_RDWR | O_NOCTTY | O_SYNC);
 	if (fd == -1) {
-		fprintf(stderr, "Could not open %s: %i\n", argv[1], errno);
+		fprintf(stderr, "Could not open %s: %i\n", devname, errno);
 		return 2;
 	}
+	//if it breaks try commenting out the next line
 	set_interface_attribs(fd, B115200, 0);
 
 	//this is only needed when O_NONBLOCK was used
